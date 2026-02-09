@@ -15,19 +15,53 @@
                     <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                         {{ __('Dashboard') }}
                     </flux:sidebar.item>
+                    <flux:sidebar.item icon="archive-box" :href="route('alat.index')" :current="request()->routeIs('alat.*')" wire:navigate>
+                        {{ __('Alat') }}
+                    </flux:sidebar.item>
+                    <flux:sidebar.item icon="clipboard-document-list" :href="route('peminjaman.index')" :current="request()->routeIs('peminjaman.*')" wire:navigate>
+                        {{ __('Peminjaman') }}
+                    </flux:sidebar.item>
+                    <flux:sidebar.item icon="arrow-path" :href="route('pengembalian.index')" :current="request()->routeIs('pengembalian.*')" wire:navigate>
+                        {{ __('Pengembalian') }}
+                    </flux:sidebar.item>
+                    <flux:sidebar.item icon="currency-dollar" :href="route('denda.index')" :current="request()->routeIs('denda.*')" wire:navigate>
+                        {{ __('Denda') }}
+                    </flux:sidebar.item>
+                    <flux:sidebar.item icon="credit-card" :href="route('payment.index')" :current="request()->routeIs('payment.*')" wire:navigate>
+                        {{ __('Pembayaran') }}
+                    </flux:sidebar.item>
                 </flux:sidebar.group>
+
+                @if(auth()->user()->isAdmin() || auth()->user()->isPetugas())
+                <flux:sidebar.group :heading="__('Management')" class="grid">
+                    @if(auth()->user()->isAdmin())
+                    <flux:sidebar.item icon="users" :href="route('users.index')" :current="request()->routeIs('users.*')" wire:navigate>
+                        {{ __('Users') }}
+                    </flux:sidebar.item>
+                    @endif
+                    <flux:sidebar.item icon="tag" :href="route('kategori.index')" :current="request()->routeIs('kategori.*')" wire:navigate>
+                        {{ __('Kategori') }}
+                    </flux:sidebar.item>
+                    
+                    @if(auth()->user()->isAdmin())
+                    <flux:sidebar.item icon="clipboard-document-list" :href="route('log-aktivitas.index')" :current="request()->routeIs('log-aktivitas.*')" wire:navigate>
+                        {{ __('Log Aktivitas') }}
+                    </flux:sidebar.item>
+                    @endif
+                </flux:sidebar.group>
+                @endif
             </flux:sidebar.nav>
 
             <flux:spacer />
 
             <flux:sidebar.nav>
-                <flux:sidebar.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
+                {{-- <flux:sidebar.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
                     {{ __('Repository') }}
                 </flux:sidebar.item>
 
                 <flux:sidebar.item icon="book-open-text" href="https://laravel.com/docs/starter-kits#livewire" target="_blank">
                     {{ __('Documentation') }}
-                </flux:sidebar.item>
+                </flux:sidebar.item> --}}
             </flux:sidebar.nav>
 
             <x-desktop-user-menu class="hidden lg:block" :name="auth()->user()->name" />

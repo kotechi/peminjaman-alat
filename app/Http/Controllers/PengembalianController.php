@@ -47,10 +47,13 @@ class PengembalianController extends Controller
         $validated = $request->validate([
             'id_peminjaman' => 'required|exists:peminjaman,id',
             'tanggal_kembali_realisasi' => 'required|date',
-            'id_user' => 'required|exists:users,id',
+            'id_user' => 'nullable|exists:users,id',
         ]);
 
-        // Check if peminjaman already has pengembalian
+        if(auth()->user()->isPeminjam()) {
+            $validated['id_user'] = auth()->id();
+        }
+
         $existingPengembalian = Pengembalian::where('id_peminjaman', $validated['id_peminjaman'])->first();
         if ($existingPengembalian) {
             return back()
@@ -62,8 +65,9 @@ class PengembalianController extends Controller
         $tanggalPengembalian = Carbon::parse($peminjaman->tanggal_pengembalian);
         $tanggalKembaliRealisasi = Carbon::parse($validated['tanggal_kembali_realisasi']);
 
-        $hariTerlambat = $tanggalKembaliRealisasi->diffInDays($tanggalPengembalian, false);
+        $hariTerlambat = $tanggalPengembalian->diffInDays($tanggalKembaliRealisasi, false);
         $hariTerlambat = max(0, $hariTerlambat);
+
 
         $validated['hari_terlambat'] = $hariTerlambat;
 

@@ -18,6 +18,10 @@ class PeminjamanController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(15);
 
+        if(auth()->user()->isPeminjam()) {
+            $peminjaman->where('id_user', auth()->id());
+        }
+
         return view('peminjaman.index', compact('peminjaman'));
     }
 
@@ -41,10 +45,14 @@ class PeminjamanController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'id_user' => 'required|exists:users,id',
+            'id_user' => 'nullable|exists:users,id',
             'id_alat' => 'required|exists:alat,id',
             'tanggal_pengembalian' => 'required|date|after:today',
         ]);
+
+        if (!isset($validated['id_user'])) {
+            $validated['id_user'] = auth()->id();
+        }
 
         // Check if alat is available
         $alat = Alat::find($validated['id_alat']);
@@ -89,7 +97,7 @@ class PeminjamanController extends Controller
     public function update(Request $request, Peminjaman $peminjaman)
     {
         $validated = $request->validate([
-            'id_user' => 'required|exists:users,id',
+            'id_user' => 'nullable|exists:users,id',
             'id_alat' => 'required|exists:alat,id',
             'tanggal_pengembalian' => 'required|date|after:today',
             'status' => 'required|in:menunggu,disetujui,ditolak,dikembalikan',

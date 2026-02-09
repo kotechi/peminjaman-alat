@@ -1,21 +1,27 @@
 <x-layouts::app :title="'Tambah Peminjaman'">
-    <div class="max-w-2xl mx-auto space-y-6">
-        <div class="flex items-center space-x-4">
-            <a href="{{ route('peminjaman.index') }}" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100">
-                ← Kembali
+    <div class="max-w-3xl mx-auto space-y-6">
+        <!-- Back Button & Title -->
+        <div class="flex items-center gap-4">
+            <a href="{{ route('peminjaman.index') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors shadow-sm">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+                Kembali
             </a>
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Tambah Peminjaman</h1>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Tambah Peminjaman</h1>
         </div>
 
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+        <!-- Form Card -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-8">
             <form method="POST" action="{{ route('peminjaman.store') }}">
                 @csrf
 
                 <div class="space-y-6">
                     <div>
-                        <label for="id_user" class="block text-sm font-medium text-gray-700 dark:text-gray-300">User</label>
+                        @if(auth()->user()->isAdmin() or auth()->user()->isPetugas())
+                        <label for="id_user" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">User</label>
                         <select name="id_user" id="id_user"
-                                class="mt-1 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                class="block w-full px-4 py-3 border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                 required>
                             <option value="">Pilih User</option>
                             @foreach($users as $user)
@@ -28,11 +34,12 @@
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
+                    @endif
 
                     <div>
-                        <label for="id_alat" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Alat</label>
+                        <label for="id_alat" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Alat</label>
                         <select name="id_alat" id="id_alat"
-                                class="mt-1 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                class="block w-full px-4 py-3 border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                 required>
                             <option value="">Pilih Alat</option>
                             @foreach($alat as $item)
@@ -47,20 +54,26 @@
                     </div>
 
                     <div>
-                        <label for="tanggal_pengembalian" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Tanggal Pengembalian</label>
+                        <label for="tanggal_pengembalian" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Tanggal Pengembalian</label>
                         <input type="date" name="tanggal_pengembalian" id="tanggal_pengembalian" value="{{ old('tanggal_pengembalian') }}"
-                               class="mt-1 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                               class="block w-full px-4 py-3 border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                required min="{{ date('Y-m-d', strtotime('+1 day')) }}">
                         @error('tanggal_pengembalian')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
 
-                    <div class="flex justify-end space-x-3">
-                        <a href="{{ route('peminjaman.index') }}" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg font-medium">
+                    <div class="flex justify-end gap-3 pt-4">
+                        <a href="{{ route('peminjaman.index') }}" class="inline-flex items-center gap-2 px-6 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg font-semibold shadow-sm transition-all">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
                             Batal
                         </a>
-                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium">
+                        <button type="submit" class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold shadow-md hover:shadow-lg transition-all">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
                             Simpan
                         </button>
                     </div>
