@@ -14,14 +14,18 @@ class PeminjamanController extends Controller
      */
     public function index()
     {
-        $peminjaman = Peminjaman::with(['user', 'alat.kategori'])
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
-
         if(auth()->user()->isPeminjam()) {
-            $peminjaman->where('id_user', auth()->id());
+        
+            $peminjaman = Peminjaman::with(['user', 'alat.kategori'])
+                ->where('id_user', auth()->id())
+                ->orderBy('created_at', 'desc')
+                ->paginate(15);    
+        } else {
+                        
+            $peminjaman = Peminjaman::with(['user', 'alat.kategori'])
+                ->orderBy('created_at', 'desc')
+                ->paginate(15);
         }
-
         return view('peminjaman.index', compact('peminjaman'));
     }
 
@@ -134,8 +138,12 @@ class PeminjamanController extends Controller
         $validated = $request->validate([
             'status' => 'required|in:disetujui,ditolak',
         ]);
-
         $peminjaman->update(['status' => $validated['status']]);
+        if($validated['status'] === 'ditolak') {
+            $peminjaman->alat->update(['status' => 'tersedia']);
+        }elseif($validated['status'] === 'disetujui') {
+            $peminjaman->alat->update(['status' => 'tidak_tersedia']);
+        }
 
         $message = $validated['status'] === 'disetujui'
             ? 'Peminjaman berhasil disetujui.'

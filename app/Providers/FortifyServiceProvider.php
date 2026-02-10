@@ -4,8 +4,12 @@ namespace App\Providers;
 
 use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
+use App\Models\LogAktivitas;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Auth\Events\Logout;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
@@ -29,6 +33,33 @@ class FortifyServiceProvider extends ServiceProvider
         $this->configureActions();
         $this->configureViews();
         $this->configureRateLimiting();
+        $this->configureAuthEvents();
+    }
+
+    /**
+     * Configure authentication event listeners.
+     */
+    private function configureAuthEvents(): void
+    {
+        Event::listen(Login::class, function ($event) {
+            LogAktivitas::create([
+                'id_user' => $event->user->id,
+                'jenis_aktivitas' => 'login',
+                'deskripsi' => 'Login ke sistem',
+                'tanggal_aktivitas' => now(),
+            ]);
+        });
+
+        Event::listen(Logout::class, function ($event) {
+            if ($event->user) {
+                LogAktivitas::create([
+                    'id_user' => $event->user->id,
+                    'jenis_aktivitas' => 'logout',
+                    'deskripsi' => 'Logout dari sistem',
+                    'tanggal_aktivitas' => now(),
+                ]);
+            }
+        });
     }
 
     /**

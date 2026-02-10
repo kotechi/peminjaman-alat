@@ -7,7 +7,7 @@
                     <h1 class="text-3xl font-bold mb-1">Daftar Alat</h1>
                     <p class="text-green-100">Lihat dan kelola semua alat</p>
                 </div>
-                @if(auth()->user()->isAdmin() or auth()->user()->isPetugas())
+                @if(auth()->user()->isAdmin())
                 <a href="{{ route('alat.create') }}" class="bg-white text-green-600 hover:bg-green-50 px-6 py-3 rounded-lg font-semibold shadow-md transition-all duration-200 hover:shadow-lg flex items-center gap-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
@@ -62,7 +62,7 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Nama Alat</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Kategori</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
-                            @if(auth()->user()->isAdmin() or auth()->user()->isPetugas())
+                            @if(auth()->user()->isAdmin() )
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Aksi</th>
                             @endif
                         </tr>
@@ -84,7 +84,7 @@
                                         {{ ucfirst($item->status) }}
                                     </span>
                                 </td>
-                                @if(auth()->user()->isAdmin() or auth()->user()->isPetugas())
+                                @if(auth()->user()->isAdmin() )
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                                     <a href="{{ route('alat.edit', $item) }}" class="inline-flex items-center px-3 py-1.5 bg-indigo-100 text-indigo-700 hover:bg-indigo-200 dark:bg-indigo-900 dark:text-indigo-300 dark:hover:bg-indigo-800 rounded-md transition-colors">
                                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">

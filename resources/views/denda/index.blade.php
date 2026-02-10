@@ -4,7 +4,11 @@
         <div class="bg-gradient-to-r from-red-600 to-red-800 dark:from-red-700 dark:to-red-900 rounded-xl shadow-lg p-6">
             <div class="text-white">
                 <h1 class="text-3xl font-bold mb-1">Daftar Denda</h1>
+                @if(auth()->user()->isAdmin() || auth()->user()->isPetugas())
                 <p class="text-red-100">Kelola denda peminjaman</p>
+                @else
+                <p class="text-red-100">Lihat riwayat denda Anda</p>
+                @endif
             </div>
         </div>
 
@@ -67,7 +71,7 @@
                                         </svg>
                                         Edit
                                     </a>
-                                    <form method="POST" action="{{ route('denda.destroy', $item) }}" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus denda ini?')">
+                                    {{-- <form method="POST" action="{{ route('denda.destroy', $item) }}" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus denda ini?')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-red-100 text-red-700 hover:bg-red-200 dark:bg-red-900 dark:text-red-300 dark:hover:bg-red-800 rounded-md transition-colors">
@@ -76,7 +80,7 @@
                                             </svg>
                                             Hapus
                                         </button>
-                                    </form>
+                                    </form> --}}
                                 </td>
                                 @endif
                             </tr>

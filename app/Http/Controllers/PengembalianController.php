@@ -30,7 +30,6 @@ class PengembalianController extends Controller
     {
         $peminjaman = Peminjaman::with(['user', 'alat.kategori'])
             ->where('status', 'disetujui')
-            ->whereDoesntHave('pengembalian')
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -54,12 +53,12 @@ class PengembalianController extends Controller
             $validated['id_user'] = auth()->id();
         }
 
-        $existingPengembalian = Pengembalian::where('id_peminjaman', $validated['id_peminjaman'])->first();
-        if ($existingPengembalian) {
-            return back()
-                ->withInput()
-                ->withErrors(['id_peminjaman' => 'Peminjaman ini sudah memiliki pengembalian.']);
-        }
+        // $existingPengembalian = Pengembalian::where('id_peminjaman', $validated['id_peminjaman'])->first();
+        // if ($existingPengembalian) {
+        //     return back()
+        //         ->withInput()
+        //         ->withErrors(['id_peminjaman' => 'Peminjaman ini sudah memiliki pengembalian.']);
+        // }
 
         $peminjaman = Peminjaman::find($validated['id_peminjaman']);
         $tanggalPengembalian = Carbon::parse($peminjaman->tanggal_pengembalian);
@@ -73,16 +72,7 @@ class PengembalianController extends Controller
 
         $pengembalian = Pengembalian::create($validated);
 
-        // Create denda if late
-        if ($hariTerlambat > 0) {
-            Denda::create([
-                'id_pengembalian' => $pengembalian->id,
-                'id_user' => $validated['id_user'],
-                'nama_kategori' => $peminjaman->alat->kategori->nama_kategori,
-                'total_denda' => $hariTerlambat * 5000, // Assuming 5000 per day
-                'status' => 'menunggu',
-            ]);
-        }
+      
 
         // Update peminjaman status
         $peminjaman->update(['status' => 'dikembalikan']);
@@ -143,13 +133,37 @@ class PengembalianController extends Controller
             'status' => 'required|in:disetujui,ditolak,selesai',
         ]);
 
-        $pengembalian->update(['status' => $validated['status']]);
-
         $message = match($validated['status']) {
             'disetujui' => 'Pengembalian berhasil disetujui.',
             'ditolak' => 'Pengembalian berhasil ditolak.',
             'selesai' => 'Pengembalian berhasil diselesaikan.',
         };
+        $pengembalian->update(['status' => $validated['status']]);
+        if($validated['status'] === 'selesai') {
+            $pengembalian->peminjaman->update(['status' => 'dikembalikan']);
+
+            $pengembalian->peminjaman->alat->update(['status' => 'tersedia']);
+        }elseif($validated['status'] === 'disetujui') {
+            $pengembalian->peminjaman->update(['status' => 'dikembalikan']);
+
+            $pengembalian->peminjaman->alat->update(['status' => 'tidak_tersedia']);
+            if ($pengembalian->hari_terlambat > 0) {
+
+                Denda::firstOrCreate(
+                    ['id_pengembalian' => $pengembalian->id],
+                    [
+                        'id_user' => $pengembalian->id_user,
+                        'nama_kategori' => $pengembalian->peminjaman->alat->kategori->nama_kategori,
+                        'total_denda' => $pengembalian->hari_terlambat * 5000,
+                        'status' => 'menunggu',
+                    ]
+                );
+            }
+        }elseif($validated['status'] === 'ditolak') {
+            $pengembalian->peminjaman->update(['status' => 'disetujui']);
+
+            $pengembalian->peminjaman->alat->update(['status' => 'tidak_tersedia']);
+        }
 
         return redirect()
             ->route('pengembalian.index')

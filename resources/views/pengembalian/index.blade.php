@@ -5,13 +5,21 @@
             <div class="flex justify-between items-center">
                 <div class="text-white">
                     <h1 class="text-3xl font-bold mb-1">Daftar Pengembalian</h1>
+                    @if(auth()->user()->isAdmin() || auth()->user()->isPetugas())
                     <p class="text-teal-100">Kelola pengembalian alat</p>
+                    @else
+                    <p class="text-teal-100">Lihat riwayat pengembalian Anda</p>
+                    @endif
                 </div>
                 <a href="{{ route('pengembalian.create') }}" class="bg-white text-teal-600 hover:bg-teal-50 px-6 py-3 rounded-lg font-semibold shadow-md transition-all duration-200 hover:shadow-lg flex items-center gap-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                     </svg>
-                    Tambah Pengembalian
+                    @if(auth()->user()->isAdmin() || auth()->user()->isPetugas())
+                        Tambah Pengembalian
+                    @else
+                        Ajukan Pengembalian
+                    @endif
                 </a>
             </div>
         </div>
@@ -38,7 +46,9 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">User</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Terlambat</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Aksi</th>
+                            @if(auth()->user()->isAdmin() || auth()->user()->isPetugas())
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Aksi</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -67,38 +77,42 @@
                                         {{ ucfirst($item->status) }}
                                     </span>
                                 </td>
+                                @if(auth()->user()->isAdmin() || auth()->user()->isPetugas())
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <div class="flex items-center gap-2">
-                                        <a href="{{ route('pengembalian.edit', $item) }}" class="inline-flex items-center px-3 py-1.5 bg-indigo-100 text-indigo-700 hover:bg-indigo-200 dark:bg-indigo-900 dark:text-indigo-300 dark:hover:bg-indigo-800 rounded-md transition-colors">
-                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                            </svg>
-                                            Edit
-                                        </a>
-                                        @if($item->status == 'menunggu')
-                                            <form method="POST" action="{{ route('pengembalian.confirm', $item) }}" class="inline">
-                                                @csrf
-                                                @method('PUT')
-                                                <input type="hidden" name="status" value="disetujui">
-                                                <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-900 dark:text-green-300 dark:hover:bg-green-800 rounded-md transition-colors">
-                                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                                    </svg>
-                                                    Setujui
-                                                </button>
-                                            </form>
-                                            <form method="POST" action="{{ route('pengembalian.confirm', $item) }}" class="inline">
-                                                @csrf
-                                                @method('PUT')
-                                                <input type="hidden" name="status" value="ditolak">
-                                                <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-red-100 text-red-700 hover:bg-red-200 dark:bg-red-900 dark:text-red-300 dark:hover:bg-red-800 rounded-md transition-colors">
-                                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                                    </svg>
-                                                    Tolak
-                                                </button>
-                                            </form>
-                                        @elseif($item->status == 'disetujui')
+                                        @if(auth()->user()->isAdmin())
+                                            <a href="{{ route('pengembalian.edit', $item) }}" class="inline-flex items-center px-3 py-1.5 bg-indigo-100 text-indigo-700 hover:bg-indigo-200 dark:bg-indigo-900 dark:text-indigo-300 dark:hover:bg-indigo-800 rounded-md transition-colors">
+                                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                                </svg>
+                                                Edit
+                                            </a>
+                                        @endif
+                                        @if(auth()->user()->isPetugas())
+                                            @if($item->status == 'menunggu' )
+                                                <form method="POST" action="{{ route('pengembalian.confirm', $item) }}" class="inline">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <input type="hidden" name="status" value="disetujui">
+                                                    <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-900 dark:text-green-300 dark:hover:bg-green-800 rounded-md transition-colors">
+                                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                                        </svg>
+                                                        Setujui
+                                                    </button>
+                                                </form>
+                                                <form method="POST" action="{{ route('pengembalian.confirm', $item) }}" class="inline">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <input type="hidden" name="status" value="ditolak">
+                                                    <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-red-100 text-red-700 hover:bg-red-200 dark:bg-red-900 dark:text-red-300 dark:hover:bg-red-800 rounded-md transition-colors">
+                                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                                        </svg>
+                                                        Tolak
+                                                    </button>
+                                                </form>
+                                            @elseif($item->status == 'disetujui')
                                             <form method="POST" action="{{ route('pengembalian.confirm', $item) }}" class="inline">
                                                 @csrf
                                                 @method('PUT')
@@ -110,16 +124,18 @@
                                                     Selesai
                                                 </button>
                                             </form>
+                                            @endif
                                         @endif
                                     </div>
                                 </td>
+                                @endif
                             </tr>
-                        @empty
-                            <tr>
-                                <td colspan="6" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
-                                    Tidak ada data pengembalian
-                                </td>
-                            </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                                        Tidak ada data pengembalian
+                                    </td>
+                                </tr>
                         @endforelse
                     </tbody>
                 </table>

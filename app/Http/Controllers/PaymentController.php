@@ -28,7 +28,6 @@ class PaymentController extends Controller
     {
         $denda = Denda::with(['pengembalian.peminjaman.user', 'pengembalian.peminjaman.alat'])
             ->where('status', 'menunggu')
-            ->whereDoesntHave('payment')
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -46,13 +45,6 @@ class PaymentController extends Controller
             'proof_img' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // Check if denda already has payment
-        $existingPayment = Payment::where('id_denda', $validated['id_denda'])->first();
-        if ($existingPayment) {
-            return back()
-                ->withInput()
-                ->withErrors(['id_denda' => 'Denda ini sudah memiliki pembayaran.']);
-        }
 
         // Handle file upload
         if ($request->hasFile('proof_img')) {

@@ -24,6 +24,19 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureDefaults();
+        $this->registerObservers();
+    }
+
+    /**
+     * Register model observers.
+     */
+    protected function registerObservers(): void
+    {
+        \App\Models\Peminjaman::observe(\App\Observers\PeminjamanObserver::class);
+        \App\Models\Pengembalian::observe(\App\Observers\PengembalianObserver::class);
+        \App\Models\Alat::observe(\App\Observers\AlatObserver::class);
+        \App\Models\Denda::observe(\App\Observers\DendaObserver::class);
+        \App\Models\Kategori::observe(\App\Observers\KategoriObserver::class);
     }
 
     /**

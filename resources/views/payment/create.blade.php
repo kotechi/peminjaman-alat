@@ -1,4 +1,4 @@
-<x-layouts::app :title="'Tambah Pembayaran'">
+<x-layouts::app :title="'Ajukan Bukti Pembayaran'">
     <div class="max-w-3xl mx-auto space-y-6">
         <!-- Back Button & Title -->
         <div class="flex items-center gap-4">
@@ -8,7 +8,7 @@
                 </svg>
                 Kembali
             </a>
-            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Tambah Pembayaran</h1>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Ajukan Bukti Pembayaran</h1>
         </div>
 
         <!-- Form Card -->
