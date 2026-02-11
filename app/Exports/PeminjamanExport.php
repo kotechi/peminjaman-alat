@@ -50,7 +50,7 @@ class PeminjamanExport implements FromCollection, WithHeadings, WithMapping, Wit
             $row->user->name,
             $row->alat->nama_alat,
             $row->alat->kategori->nama_kategori,
-            $row->tanggal_pinjam->format('d/m/Y'),
+            $row->created_at->format('d/m/Y'),
             $row->tanggal_pengembalian->format('d/m/Y'),
             ucfirst($row->status),
         ];
