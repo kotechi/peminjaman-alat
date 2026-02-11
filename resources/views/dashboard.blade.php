@@ -1,9 +1,21 @@
 <x-layouts::app :title="__('Dashboard')">
     <div class="space-y-6">
         <!-- Welcome Section -->
-        <div class="bg-gradient-to-r from-blue-600 to-blue-800 dark:from-blue-700 dark:to-blue-900 rounded-xl shadow-lg p-6 text-white">
-            <h1 class="text-3xl font-bold mb-2">Selamat datang, {{ auth()->user()->name }}!</h1>
-            <p class="text-blue-100">Kelola sistem peminjaman alat dengan mudah dan efisien</p>
+        <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-purple-700 dark:from-indigo-700 dark:via-purple-700 dark:to-purple-800 rounded-xl shadow-lg p-6 text-white">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-3xl font-bold mb-2">Selamat datang, {{ auth()->user()->name }}!</h1>
+                    <p class="text-purple-100">Kelola sistem peminjaman alat dengan mudah dan efisien</p>
+                </div>
+                @if(auth()->user()->isPetugas())
+                <a href="{{ route('laporan.keseluruhan') }}" class="bg-white text-purple-600 hover:bg-purple-50 px-6 py-3 rounded-lg font-semibold shadow-md transition-all duration-200 hover:shadow-lg flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    Cetak Laporan Keseluruhan
+                </a>
+                @endif
+            </div>
         </div>
 
         <!-- Summary Cards -->

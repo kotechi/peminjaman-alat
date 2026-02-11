@@ -14,11 +14,36 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        $payment = Payment::with(['denda.pengembalian.peminjaman.user', 'denda.pengembalian.peminjaman.alat'])
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
+        if(auth()->user()->isPeminjam()) {
+            $payment = Payment::with(['denda.pengembalian.peminjaman.user', 'denda.pengembalian.peminjaman.alat'])
+                ->whereHas('denda.pengembalian.peminjaman', function($q) {
+                    $q->where('id_user', auth()->id());
+                })
+                ->orderBy('created_at', 'desc')
+                ->paginate(15);
+            
+            // Summary untuk peminjam
+            $totalPembayaran = Payment::whereHas('denda.pengembalian.peminjaman', function($q) {
+                $q->where('id_user', auth()->id());
+            })->sum('nominal');
+            $pembayaranDisetujui = Payment::whereHas('denda.pengembalian.peminjaman', function($q) {
+                $q->where('id_user', auth()->id());
+            })->where('status', 'disetujui')->count();
+            $pembayaranMenunggu = Payment::whereHas('denda.pengembalian.peminjaman', function($q) {
+                $q->where('id_user', auth()->id());
+            })->where('status', 'menunggu')->count();
+        } else {
+            $payment = Payment::with(['denda.pengembalian.peminjaman.user', 'denda.pengembalian.peminjaman.alat'])
+                ->orderBy('created_at', 'desc')
+                ->paginate(15);
+            
+            // Summary untuk petugas/admin
+            $totalPembayaran = Payment::sum('nominal');
+            $pembayaranDisetujui = Payment::where('status', 'disetujui')->count();
+            $pembayaranMenunggu = Payment::where('status', 'menunggu')->count();
+        }
 
-        return view('payment.index', compact('payment'));
+        return view('payment.index', compact('payment', 'totalPembayaran', 'pembayaranDisetujui', 'pembayaranMenunggu'));
     }
 
     /**

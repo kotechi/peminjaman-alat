@@ -75,6 +75,15 @@ Route::middleware('auth')->group(function () {
         Route::put('/{log_aktivitas}', [\App\Http\Controllers\LogAktivitasController::class, 'update'])->name('log-aktivitas.update');
         Route::delete('/{log_aktivitas}', [\App\Http\Controllers\LogAktivitasController::class, 'destroy'])->name('log-aktivitas.destroy');
     });
+
+    // Routes Laporan (untuk Petugas dan Admin)
+    Route::prefix('laporan')->group(function () {
+        Route::get('/keseluruhan', [\App\Http\Controllers\LaporanController::class, 'downloadKeseluruhan'])->name('laporan.keseluruhan');
+        Route::get('/peminjaman', [\App\Http\Controllers\LaporanController::class, 'downloadPeminjaman'])->name('laporan.peminjaman');
+        Route::get('/pengembalian', [\App\Http\Controllers\LaporanController::class, 'downloadPengembalian'])->name('laporan.pengembalian');
+        Route::get('/denda', [\App\Http\Controllers\LaporanController::class, 'downloadDenda'])->name('laporan.denda');
+        Route::get('/payment', [\App\Http\Controllers\LaporanController::class, 'downloadPayment'])->name('laporan.payment');
+    });
 });
 // Route::view('dashboard', 'dashboard')
 //     ->middleware(['auth', 'verified'])

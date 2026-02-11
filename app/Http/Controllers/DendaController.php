@@ -14,11 +14,36 @@ class DendaController extends Controller
      */
     public function index()
     {
-        $denda = Denda::with(['pengembalian.peminjaman.user', 'pengembalian.peminjaman.alat', 'user'])
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
+        if(auth()->user()->isPeminjam()) {
+            $denda = Denda::with(['pengembalian.peminjaman.user', 'pengembalian.peminjaman.alat', 'user'])
+                ->whereHas('pengembalian.peminjaman', function($q) {
+                    $q->where('id_user', auth()->id());
+                })
+                ->orderBy('created_at', 'desc')
+                ->paginate(15);
+            
+            // Summary untuk peminjam
+            $totalDenda = Denda::whereHas('pengembalian.peminjaman', function($q) {
+                $q->where('id_user', auth()->id());
+            })->sum('total_denda');
+            $dendaMenunggu = Denda::whereHas('pengembalian.peminjaman', function($q) {
+                $q->where('id_user', auth()->id());
+            })->where('status', 'menunggu')->count();
+            $dendaLunas = Denda::whereHas('pengembalian.peminjaman', function($q) {
+                $q->where('id_user', auth()->id());
+            })->where('status', 'lunas')->count();
+        } else {
+            $denda = Denda::with(['pengembalian.peminjaman.user', 'pengembalian.peminjaman.alat', 'user'])
+                ->orderBy('created_at', 'desc')
+                ->paginate(15);
+            
+            // Summary untuk petugas/admin
+            $totalDenda = Denda::sum('total_denda');
+            $dendaMenunggu = Denda::where('status', 'menunggu')->count();
+            $dendaLunas = Denda::where('status', 'lunas')->count();
+        }
 
-        return view('denda.index', compact('denda'));
+        return view('denda.index', compact('denda', 'totalDenda', 'dendaMenunggu', 'dendaLunas'));
     }
 
     /**

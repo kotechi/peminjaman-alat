@@ -1,13 +1,13 @@
 <x-layouts::app :title="'Daftar User'">
     <div class="space-y-6">
         <!-- Page Header -->
-        <div class="bg-gradient-to-r from-blue-600 to-blue-800 dark:from-blue-700 dark:to-blue-900 rounded-xl shadow-lg p-6">
+        <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-purple-700 dark:from-indigo-700 dark:via-purple-700 dark:to-purple-800 rounded-xl shadow-lg p-6">
             <div class="flex justify-between items-center">
                 <div class="text-white">
                     <h1 class="text-3xl font-bold mb-1">Daftar User</h1>
-                    <p class="text-blue-100">Kelola pengguna sistem</p>
+                    <p class="text-purple-100">Kelola pengguna sistem</p>
                 </div>
-                <a href="{{ route('users.create') }}" class="bg-white text-blue-600 hover:bg-blue-50 px-6 py-3 rounded-lg font-semibold shadow-md transition-all duration-200 hover:shadow-lg flex items-center gap-2">
+                <a href="{{ route('users.create') }}" class="bg-white text-purple-600 hover:bg-purple-50 px-6 py-3 rounded-lg font-semibold shadow-md transition-all duration-200 hover:shadow-lg flex items-center gap-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                     </svg>

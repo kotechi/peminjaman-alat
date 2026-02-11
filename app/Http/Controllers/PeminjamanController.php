@@ -19,14 +19,24 @@ class PeminjamanController extends Controller
             $peminjaman = Peminjaman::with(['user', 'alat.kategori'])
                 ->where('id_user', auth()->id())
                 ->orderBy('created_at', 'desc')
-                ->paginate(15);    
+                ->paginate(15);
+            
+            // Summary untuk peminjam
+            $totalPeminjaman = Peminjaman::where('id_user', auth()->id())->count();
+            $peminjamanDisetujui = Peminjaman::where('id_user', auth()->id())->where('status', 'disetujui')->count();
+            $peminjamanMenunggu = Peminjaman::where('id_user', auth()->id())->where('status', 'menunggu')->count();
         } else {
                         
             $peminjaman = Peminjaman::with(['user', 'alat.kategori'])
                 ->orderBy('created_at', 'desc')
                 ->paginate(15);
+            
+            // Summary untuk petugas/admin
+            $totalPeminjaman = Peminjaman::count();
+            $peminjamanDisetujui = Peminjaman::where('status', 'disetujui')->count();
+            $peminjamanMenunggu = Peminjaman::where('status', 'menunggu')->count();
         }
-        return view('peminjaman.index', compact('peminjaman'));
+        return view('peminjaman.index', compact('peminjaman', 'totalPeminjaman', 'peminjamanDisetujui', 'peminjamanMenunggu'));
     }
 
     /**

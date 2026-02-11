@@ -1,13 +1,23 @@
 <x-layouts::app :title="'Daftar Denda'">
     <div class="space-y-6">
         <!-- Page Header -->
-        <div class="bg-gradient-to-r from-red-600 to-red-800 dark:from-red-700 dark:to-red-900 rounded-xl shadow-lg p-6">
-            <div class="text-white">
-                <h1 class="text-3xl font-bold mb-1">Daftar Denda</h1>
-                @if(auth()->user()->isAdmin() || auth()->user()->isPetugas())
-                <p class="text-red-100">Kelola denda peminjaman</p>
-                @else
-                <p class="text-red-100">Lihat riwayat denda Anda</p>
+        <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-purple-700 dark:from-indigo-700 dark:via-purple-700 dark:to-purple-800 rounded-xl shadow-lg p-6">
+            <div class="flex justify-between items-center">
+                <div class="text-white">
+                    <h1 class="text-3xl font-bold mb-1">Daftar Denda</h1>
+                    @if(auth()->user()->isAdmin() || auth()->user()->isPetugas())
+                    <p class="text-purple-100">Kelola denda peminjaman</p>
+                    @else
+                    <p class="text-purple-100">Lihat riwayat denda Anda</p>
+                    @endif
+                </div>
+                @if( auth()->user()->isPetugas())
+                <a href="{{ route('laporan.denda') }}" class="bg-white text-purple-600 hover:bg-purple-50 px-6 py-3 rounded-lg font-semibold shadow-md transition-all duration-200 hover:shadow-lg flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    Cetak Laporan
+                </a>
                 @endif
             </div>
         </div>
@@ -22,6 +32,54 @@
                 </div>
             </div>
         @endif
+
+        <!-- Summary Cards -->
+        <div class="grid gap-6 md:grid-cols-3">
+            <!-- Total Denda -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-red-100 dark:bg-red-900 rounded-lg p-3">
+                            <svg class="w-8 h-8 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <h3 class="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Total Denda</h3>
+                    <p class="text-3xl font-bold text-gray-900 dark:text-white">Rp {{ number_format($totalDenda) }}</p>
+                </div>
+            </div>
+
+            <!-- Denda Menunggu -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-yellow-100 dark:bg-yellow-900 rounded-lg p-3">
+                            <svg class="w-8 h-8 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <h3 class="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Menunggu</h3>
+                    <p class="text-3xl font-bold text-gray-900 dark:text-white">{{ $dendaMenunggu }}</p>
+                </div>
+            </div>
+
+            <!-- Denda Lunas -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-green-100 dark:bg-green-900 rounded-lg p-3">
+                            <svg class="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <h3 class="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Lunas</h3>
+                    <p class="text-3xl font-bold text-gray-900 dark:text-white">{{ $dendaLunas }}</p>
+                </div>
+            </div>
+        </div>
 
         <!-- Data Table -->
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700">
@@ -63,26 +121,6 @@
                                         {{ ucfirst($item->status) }}
                                     </span>
                                 </td>
-                                @if(auth()->user()->isAdmin() or auth()->user()->isPetugas())
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                                    <a href="{{ route('denda.edit', $item) }}" class="inline-flex items-center px-3 py-1.5 bg-indigo-100 text-indigo-700 hover:bg-indigo-200 dark:bg-indigo-900 dark:text-indigo-300 dark:hover:bg-indigo-800 rounded-md transition-colors">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                        </svg>
-                                        Edit
-                                    </a>
-                                    {{-- <form method="POST" action="{{ route('denda.destroy', $item) }}" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus denda ini?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-red-100 text-red-700 hover:bg-red-200 dark:bg-red-900 dark:text-red-300 dark:hover:bg-red-800 rounded-md transition-colors">
-                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                            </svg>
-                                            Hapus
-                                        </button>
-                                    </form> --}}
-                                </td>
-                                @endif
                             </tr>
                         @empty
                             <tr>

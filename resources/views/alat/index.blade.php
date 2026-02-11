@@ -1,14 +1,14 @@
 <x-layouts::app :title="'Daftar Alat'">
     <div class="space-y-6">
         <!-- Page Header -->
-        <div class="bg-gradient-to-r from-green-600 to-green-800 dark:from-green-700 dark:to-green-900 rounded-xl shadow-lg p-6">
+        <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-purple-700 dark:from-indigo-700 dark:via-purple-700 dark:to-purple-800 rounded-xl shadow-lg p-6">
             <div class="flex justify-between items-center">
                 <div class="text-white">
                     <h1 class="text-3xl font-bold mb-1">Daftar Alat</h1>
-                    <p class="text-green-100">Lihat dan kelola semua alat</p>
+                    <p class="text-purple-100">Lihat dan kelola semua alat</p>
                 </div>
                 @if(auth()->user()->isAdmin())
-                <a href="{{ route('alat.create') }}" class="bg-white text-green-600 hover:bg-green-50 px-6 py-3 rounded-lg font-semibold shadow-md transition-all duration-200 hover:shadow-lg flex items-center gap-2">
+                <a href="{{ route('alat.create') }}" class="bg-white text-purple-600 hover:bg-purple-50 px-6 py-3 rounded-lg font-semibold shadow-md transition-all duration-200 hover:shadow-lg flex items-center gap-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                     </svg>

@@ -16,11 +16,36 @@ class PengembalianController extends Controller
      */
     public function index()
     {
-        $pengembalian = Pengembalian::with(['peminjaman.user', 'peminjaman.alat.kategori', 'user'])
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
+        if(auth()->user()->isPeminjam()) {
+            $pengembalian = Pengembalian::with(['peminjaman.user', 'peminjaman.alat.kategori', 'user'])
+                ->whereHas('peminjaman', function($q) {
+                    $q->where('id_user', auth()->id());
+                })
+                ->orderBy('created_at', 'desc')
+                ->paginate(15);
+            
+            // Summary untuk peminjam
+            $totalPengembalian = Pengembalian::whereHas('peminjaman', function($q) {
+                $q->where('id_user', auth()->id());
+            })->count();
+            $pengembalianSelesai = Pengembalian::whereHas('peminjaman', function($q) {
+                $q->where('id_user', auth()->id());
+            })->where('status', 'selesai')->count();
+            $pengembalianMenunggu = Pengembalian::whereHas('peminjaman', function($q) {
+                $q->where('id_user', auth()->id());
+            })->where('status', 'menunggu')->count();
+        } else {
+            $pengembalian = Pengembalian::with(['peminjaman.user', 'peminjaman.alat.kategori', 'user'])
+                ->orderBy('created_at', 'desc')
+                ->paginate(15);
+            
+            // Summary untuk petugas/admin
+            $totalPengembalian = Pengembalian::count();
+            $pengembalianSelesai = Pengembalian::where('status', 'selesai')->count();
+            $pengembalianMenunggu = Pengembalian::where('status', 'menunggu')->count();
+        }
 
-        return view('pengembalian.index', compact('pengembalian'));
+        return view('pengembalian.index', compact('pengembalian', 'totalPengembalian', 'pengembalianSelesai', 'pengembalianMenunggu'));
     }
 
     /**

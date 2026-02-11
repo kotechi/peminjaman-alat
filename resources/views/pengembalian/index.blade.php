@@ -1,26 +1,36 @@
 <x-layouts::app :title="'Daftar Pengembalian'">
     <div class="space-y-6">
         <!-- Page Header -->
-        <div class="bg-gradient-to-r from-teal-600 to-teal-800 dark:from-teal-700 dark:to-teal-900 rounded-xl shadow-lg p-6">
+        <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-purple-700 dark:from-indigo-700 dark:via-purple-700 dark:to-purple-800 rounded-xl shadow-lg p-6">
             <div class="flex justify-between items-center">
                 <div class="text-white">
                     <h1 class="text-3xl font-bold mb-1">Daftar Pengembalian</h1>
                     @if(auth()->user()->isAdmin() || auth()->user()->isPetugas())
-                    <p class="text-teal-100">Kelola pengembalian alat</p>
+                    <p class="text-purple-100">Kelola pengembalian alat</p>
                     @else
-                    <p class="text-teal-100">Lihat riwayat pengembalian Anda</p>
+                    <p class="text-purple-100">Lihat riwayat pengembalian Anda</p>
                     @endif
                 </div>
-                <a href="{{ route('pengembalian.create') }}" class="bg-white text-teal-600 hover:bg-teal-50 px-6 py-3 rounded-lg font-semibold shadow-md transition-all duration-200 hover:shadow-lg flex items-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                    </svg>
-                    @if(auth()->user()->isAdmin() || auth()->user()->isPetugas())
-                        Tambah Pengembalian
-                    @else
-                        Ajukan Pengembalian
+                <div class="flex gap-3">
+                    @if(auth()->user()->isPetugas())
+                    <a href="{{ route('laporan.pengembalian') }}" class="bg-white text-purple-600 hover:bg-purple-50 px-6 py-3 rounded-lg font-semibold shadow-md transition-all duration-200 hover:shadow-lg flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        Cetak Laporan
+                    </a>
                     @endif
-                </a>
+                    <a href="{{ route('pengembalian.create') }}" class="bg-white text-purple-600 hover:bg-purple-50 px-6 py-3 rounded-lg font-semibold shadow-md transition-all duration-200 hover:shadow-lg flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        @if(auth()->user()->isAdmin() || auth()->user()->isPetugas())
+                            Tambah Pengembalian
+                        @else
+                            Ajukan Pengembalian
+                        @endif
+                    </a>
+                </div>
             </div>
         </div>
 
@@ -34,6 +44,54 @@
                 </div>
             </div>
         @endif
+
+        <!-- Summary Cards -->
+        <div class="grid gap-6 md:grid-cols-3">
+            <!-- Total Pengembalian -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-teal-100 dark:bg-teal-900 rounded-lg p-3">
+                            <svg class="w-8 h-8 text-teal-600 dark:text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <h3 class="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Total Pengembalian</h3>
+                    <p class="text-3xl font-bold text-gray-900 dark:text-white">{{ $totalPengembalian }}</p>
+                </div>
+            </div>
+
+            <!-- Pengembalian Selesai -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-green-100 dark:bg-green-900 rounded-lg p-3">
+                            <svg class="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <h3 class="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Selesai</h3>
+                    <p class="text-3xl font-bold text-gray-900 dark:text-white">{{ $pengembalianSelesai }}</p>
+                </div>
+            </div>
+
+            <!-- Pengembalian Menunggu -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-yellow-100 dark:bg-yellow-900 rounded-lg p-3">
+                            <svg class="w-8 h-8 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <h3 class="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Menunggu</h3>
+                    <p class="text-3xl font-bold text-gray-900 dark:text-white">{{ $pengembalianMenunggu }}</p>
+                </div>
+            </div>
+        </div>
 
         <!-- Data Table -->
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700">
